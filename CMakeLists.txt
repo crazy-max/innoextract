@@ -373,12 +373,6 @@ if(NOT MSVC)
 	
 endif()
 
-if($ENV{PORTAGE_REPO_NAME} MATCHES "gentoo")
-	# Meh
-	unset(LIBRARIES)
-endif()
-
-
 # All sources:
 
 set(DOCUMENTATION 0) # never build these
