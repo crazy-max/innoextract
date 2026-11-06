@@ -959,7 +959,10 @@ void extract_compiled_code(const extract_options & o, const setup::info & info) 
 		throw std::runtime_error("Could not open output file \"" + path.string() + '"');
 	}
 	ofs.write(code.data(), std::streamsize(code.size()));
-	if(ofs.fail()) {
+	ofs.flush();
+	bool failed = ofs.fail();
+	ofs.close();
+	if(failed) {
 		throw std::runtime_error("Could not write output file \"" + path.string() + '"');
 	}
 	
