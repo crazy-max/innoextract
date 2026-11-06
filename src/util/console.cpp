@@ -47,6 +47,18 @@
 
 static bool show_progress = true;
 
+// MinGW headers now declare ::isatty() so use qualified name on Windows.
+static bool is_terminal(int fd) {
+	#if defined(_WIN32)
+	return util::isatty(fd) != 0;
+	#elif INNOEXTRACT_HAVE_ISATTY
+	return isatty(fd) != 0;
+	#else
+	(void)fd;
+	return false;
+	#endif
+}
+
 #if defined(SIGWINCH)
 
 // The last known screen width.
@@ -91,7 +103,7 @@ void init(is_enabled color, is_enabled progress) {
 	
 	bool is_tty;
 	#if defined(_WIN32) || INNOEXTRACT_HAVE_ISATTY
-	is_tty = isatty(1) && isatty(2);
+	is_tty = is_terminal(1) && is_terminal(2);
 	#else
 	// Since we can't check if stdout is a terminal,
 	// don't automatically enable color output and progress bar
@@ -238,7 +250,7 @@ void progress::clear(ClearMode mode) {
 		
 		return;
 		
-	} else if(mode == DeferredClear && isatty(1)) {
+	} else if(mode == DeferredClear && is_terminal(1)) {
 		
 		/*
 		 * Special clear mode that leaves the original line but insert new lines before it

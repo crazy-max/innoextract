@@ -53,8 +53,6 @@ int console_width();
 
 } // namespace util
 
-using util::isatty;
-
 #endif // defined(_WIN32)
 
 #endif // INNOEXTRACT_UTIL_WINDOWS_HPP
