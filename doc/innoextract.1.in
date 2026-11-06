@@ -63,6 +63,7 @@ Here is a short summary of the options available in innoextract. Please refer to
 .B Filters:
 .nf
  \-m \-\-exclude\-temp       Don't extract temporary files
+    \-\-extract\-code      Extract the compiled [Code] script
     \-\-language \fILANG\fP      Extract only files for this language
     \-\-language\-only      Only extract language-specific files
  \-I \-\-include \fIEXPR\fP       Extract only files that match this path
@@ -158,6 +159,9 @@ This option takes precedence over \fB\-\-include\fP and \fB\-\-language\fP: temp
 Extract all files to the current directory. This action is enabled by default, unless one or more of the \fB\-\-list\fP, \fB\-\-list\-sizes\fP, \fB\-\-list\-checksums\fP, \fB\-\-test\fP, \fB\-\-list\-languages\fP, \fB\-\-gog\-game\-id\fP, \fB\-\-show\-password\fP or \fB\-\-check\-password\fP actions are specified.
 
 By default innoextract will continue after encountering file checksum errors. The \fB\-\-extract\fP option can be combined with \fB\-\-test\fP to abort on checksum errors.
+.TP
+\fB\-\-extract\-code\fP
+When extracting, also write the installer's compiled [Code] script to embedded/CompiledCode.bin in the output directory. This is the RemObjects Pascal Script bytecode as stored in the setup headers: it is neither run nor decompiled, but the names of the functions it imports and the string literals it uses can be read from it. Nothing is written for installers without a [Code] section.
 .TP
 \fB\-n\fP, \fB\-\-no\-extract\-unknown\fP
 By default innoextract will try to extract installers with an unknown Inno Setup data version by treating it as the closest known version. This option tells innoextract to abort instead.

@@ -921,6 +921,53 @@ void create_output_directory(const extract_options & o) {
 	
 }
 
+void extract_compiled_code(const extract_options & o, const setup::info & info) {
+	
+	const std::string & code = info.header.compiled_code;
+	if(code.empty()) {
+		return;
+	}
+	
+	const std::string name = std::string("embedded") + setup::path_sep + "CompiledCode.bin";
+	if(o.list) {
+		if(!o.silent) {
+			std::cout << " - \"" << color::white << name << color::reset << "\" (compiled [Code] script, "
+			          << print_bytes(code.size()) << ")\n";
+		} else {
+			if(o.list_sizes) {
+				std::cout << color::dim_cyan << code.size() << color::reset << ' ';
+			}
+			std::cout << color::white << name << color::reset << '\n';
+		}
+	}
+	
+	fs::path dir = o.output_dir / "embedded";
+	try {
+		fs::create_directories(dir);
+	} catch(...) {
+		throw std::runtime_error("Could not create directory \"" + dir.string() + '"');
+	}
+	
+	fs::path path = dir / "CompiledCode.bin";
+	util::ofstream ofs;
+	try {
+		ofs.open(path, std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+		if(!ofs.is_open()) {
+			throw std::exception();
+		}
+	} catch(...) {
+		throw std::runtime_error("Could not open output file \"" + path.string() + '"');
+	}
+	ofs.write(code.data(), std::streamsize(code.size()));
+	ofs.flush();
+	bool failed = ofs.fail();
+	ofs.close();
+	if(failed) {
+		throw std::runtime_error("Could not write output file \"" + path.string() + '"');
+	}
+	
+}
+
 } // anonymous namespace
 
 void process_file(const fs::path & installer, const extract_options & o) {
@@ -1065,6 +1112,9 @@ void process_file(const fs::path & installer, const extract_options & o) {
 	
 	if(o.extract) {
 		create_output_directory(o);
+		if(o.extract_code) {
+			extract_compiled_code(o, info);
+		}
 	}
 	
 	if(o.list || o.extract) {
