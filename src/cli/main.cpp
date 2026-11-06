@@ -165,6 +165,7 @@ int main(int argc, char * argv[]) {
 	po::options_description filter("Filters");
 	filter.add_options()
 		("exclude-temp,m", "Don't extract temporary files")
+		("extract-code", "Extract the compiled [Code] script")
 		("language", po::value<std::string>(), "Extract only files for this language")
 		("language-only", "Only extract language-specific files")
 		("include,I", po::value< std::vector<std::string> >(), "Extract only files that match this path")
@@ -344,6 +345,7 @@ int main(int argc, char * argv[]) {
 	}
 	
 	o.extract_temp = (options.count("exclude-temp") == 0);
+	o.extract_code = (options.count("extract-code") != 0);
 	{
 		po::variables_map::const_iterator i = options.find("language");
 		if(i != options.end()) {

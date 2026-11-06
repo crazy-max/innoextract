@@ -131,6 +131,22 @@ validate_installer() {
 		fi
 	done
 
+	output_dir="$tmp/output-code"
+	run "$compiler: extract-code" "$innoextract" --progress=0 --extract --extract-code --silent --output-dir "$output_dir" "$installer" >/dev/null
+	local compiled_code="$output_dir/embedded/CompiledCode.bin"
+	if [ ! -s "$compiled_code" ]; then
+		echo "$compiler: compiled [Code] script missing: embedded/CompiledCode.bin" >&2
+		return 1
+	fi
+	if ! grep -aq "SHOULDINSTALL" "$compiled_code"; then
+		echo "$compiler: compiled [Code] script lacks the ShouldInstall function" >&2
+		return 1
+	fi
+	if [ -e "$tmp/output/embedded" ]; then
+		echo "$compiler: compiled [Code] script written without --extract-code" >&2
+		return 1
+	fi
+
 	echo "$compiler: $data_version ok"
 }
 

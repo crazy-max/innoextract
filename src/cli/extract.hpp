@@ -77,6 +77,7 @@ struct extract_options {
 	bool extract_unknown; //!< Try to extract unknown Inno Setup versions
 	
 	bool extract_temp; //!< Extract temporary files
+	bool extract_code; //!< Extract the compiled [Code] script
 	bool language_only; //!< Extract files not associated with any language
 	std::string language; //!< Extract only files for this language
 	std::vector<std::string> include; //!< Extract only files matching these patterns
@@ -111,6 +112,7 @@ struct extract_options {
 		, gog_galaxy(false)
 		, extract_unknown(false)
 		, extract_temp(false)
+		, extract_code(false)
 		, language_only(false)
 		, collisions(OverwriteCollisions)
 	{ }
